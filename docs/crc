@@ -1,0 +1,21 @@
+quint16 Widget::crc16(const QString& hexData)//CRC-16校验
+{
+    const quint16 polynomial = 0x1005; // CRC-16 polynomial
+    const quint16 width = 16; // CRC width
+    quint16 crc = 0x0000;
+
+    QByteArray data = QByteArray::fromHex(hexData.toLatin1());
+    for (int i = 0; i < data.size(); ++i) {
+        quint16 dataByte = static_cast<quint8>(data.at(i));
+        crc ^= (dataByte << (width - 8));
+        for (int j = 0; j < 8; ++j) {
+            if (crc & 0x8000) {
+                crc = (crc << 1) ^ polynomial;
+            } else {
+                crc = (crc << 1);
+            }
+        }
+    }
+    return crc;
+
+}
